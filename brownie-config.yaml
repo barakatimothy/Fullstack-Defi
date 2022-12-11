@@ -1,0 +1,12 @@
+dependencies:
+  - Openzeppelin/openzeppelin-contracts@4.2.0
+compiler:
+  solc:
+  remappings:
+  - "@openzeppelin=Openzeppelin/openzeppelin-contracts@4.2.0"
+walllets:
+   Mainnet:
+   from_key:
+            ${PRIVATE_KEY}
+
+            
