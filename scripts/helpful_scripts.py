@@ -1,4 +1,4 @@
-from brownie import (network,Interfaces,config,accounts,MockAggregatorV3,contract,VRFCoordinator,LinkToken)
+from brownie import (network,Interfaces,config,accounts,MockAggregatorV3,MockWETH,contract,VRFCoordinator,MockDAI)
 from web3 import Web3
 
 
@@ -26,13 +26,52 @@ def get_accounts(index=None ,id=None):
      return accounts.add(config["wallets"]["from_key"])
 
 
+def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_VALUE):
+    """
+    Use this script if you want to deploy mocks to a testnet
+    """
+    print(f"The active network is {network.show_active()}")
+    print("Deploying Mocks...")
+    account = get_account()
+    print("Deploying Mock Link Token...")
+    link_token = LinkToken.deploy({"from": account})
+    print("Deploying Mock Price Feed...")
+    mock_price_feed = MockV3Aggregator.deploy(
+        decimals, initial_value, {"from": account}
+    )
+    print(f"Deployed to {mock_price_feed.address}")
+    print("Deploying Mock VRFCoordinator...")
+    mock_vrf_coordinator = VRFCoordinatorV2Mock.deploy(
+        BASE_FEE, GAS_PRICE_LINK, {"from": account}
+    )
+    print(f"Deployed to {mock_vrf_coordinator.address}")
+
+    print("Deploying Mock Oracle...")
+    mock_oracle = MockOracle.deploy(link_token.address, {"from": account})
+    print(f"Deployed to {mock_oracle.address}")
+
+    print("Deploying Mock Operator...")
+    mock_operator = MockOperator.deploy(link_token.address, account, {"from": account})
+    print(f"Deployed to {mock_operator.address}")
+    print("Deployed to {mock_price_feed.address}")
+    print("Deploying Mock DAI...")
+    dai_token = MockDAI.deploy({'from':account})
+    print("Deployed to {dai_token.address}")
+    print('Deploying WETH')
+    weth_token = MockWETH.deploy({"from":account})
+    print("Deployed to {weth_token.address}")
+    print("Mocks Deployed!")
+
+
 
 
 
 contract_to_mock = {
      "eth_usd_price_feed":MockAggregatorV3,
-     "vrf_coordinator":VRFCoordinatorMock,
-     "link_token": LinkToken
+     "dai_usd_price_feed":MockAggregatorV3,
+     'fau_token': MockDAI,
+     'weth_token': MockWET
+          
 }
 
 def get_contratcts(contract_name,):

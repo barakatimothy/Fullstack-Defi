@@ -33,7 +33,7 @@ contract TokenFarm is Ownable {
         require(balance > 0,"staking Balance cannot be zero");
         IERC20(_token).transfer(msg.sender, balance );
         stakingBalance[_token][msg.sender] == 0;
-        uniqueTokenStaked[msg.sender] == uniqueTokenStaked[msg.sender] - 1
+        uniqueTokenStaked[msg.sender] == uniqueTokenStaked[msg.sender   ] - 1
     }
     function setPriceFeedContracts(address _token, address _priceFeed)public onlyOwner {
         tokenPriceFeedMapping[_token] = _priceFeed;
@@ -86,6 +86,7 @@ contract TokenFarm is Ownable {
         uint156 decimals = uint256(priceFeed.decimals());
         return (uint256(price),decimals);
     }
+    
     function updateUniqueTokenStaked(address _user, address _token) internal {
         if (stakingBalance[_token][_user] <= 0){
             uniqueTokenStaked[_user] = uniqueTokenStaked[_user] + 1;
