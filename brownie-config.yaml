@@ -16,6 +16,6 @@ networks:
 walllets:
    Mainnet:
    from_key:
-            ${PRIVATE_KEY}
+           -{PRIVATE_KEY}
 
             
